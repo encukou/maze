@@ -1,0 +1,7 @@
+__pycache__/
+__env__/
+build/
+*.so
+*.c
+*.html
+.cache/
