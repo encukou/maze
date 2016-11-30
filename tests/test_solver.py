@@ -302,7 +302,7 @@ def check_path_lens(h, w, amaze):
     # There are more possibilities, but the len is set in stone
     for row in range(1, h):
         for column in range(1, w):
-            assert len(amaze.path(row, column)) == row + column + 1
+            assert len(lt(amaze.path(row, column))) == row + column + 1
 
 
 def check_path_distance_descends(h, w, amaze):
