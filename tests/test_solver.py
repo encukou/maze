@@ -27,13 +27,18 @@ def ids(things):
 
 
 @pytest.fixture(scope='module', params=product(S, S), ids=ids)
-def empty(request):
+def global_empty(request):
     h, w = request.param
     maze = zeros(h, w)
     maze[0, 0] = 1
     amaze = analyze(maze)
-    print_all(maze, amaze)
     return maze, amaze
+
+
+@pytest.fixture
+def empty(global_empty):
+    print_all(*global_empty[:2])
+    return global_empty
 
 
 def test_empty_shape(empty):
@@ -77,7 +82,7 @@ def test_empty_path_distance_descends(empty):
 
 
 @pytest.fixture(scope='module', params=product(S, S, D), ids=ids)
-def walled(request):
+def global_walled(request):
     h, w, d = request.param
     skip_small(h, w, d)
     maze = zeros(h, w)
@@ -87,8 +92,13 @@ def walled(request):
     maze[dim(half, d)] = -1
     maze[dim(half + 1, d)] = -1
     amaze = analyze(maze)
-    print_all(maze, amaze)
     return maze, amaze, half, d
+
+
+@pytest.fixture
+def walled(global_walled):
+    print_all(*global_walled[:2])
+    return global_walled
 
 
 def test_walled_shape(walled):
@@ -157,7 +167,7 @@ def test_walled_path_raises(walled):
 
 
 @pytest.fixture(scope='module', params=product(S, S), ids=ids)
-def s_shape(request):
+def global_s_shape(request):
     h, w = request.param
     maze = numpy.full((h, w), -1, dtype=numpy.int8)
     directions = numpy.full((h, w), b'#', dtype=('a', 1))
@@ -200,8 +210,13 @@ def s_shape(request):
         distances[loc] = idx
 
     amaze = analyze(maze)
-    print_all(maze, amaze)
     return maze, distances, directions, path, amaze
+
+
+@pytest.fixture
+def s_shape(global_s_shape):
+    print_all(global_s_shape[0], global_s_shape[-1])
+    return global_s_shape
 
 
 def test_s_shape_shape(s_shape):
