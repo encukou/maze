@@ -6,7 +6,7 @@ import pytest
 from maze import analyze
 
 
-S = (1, 5, 20, 100)
+S = (1, 5, 20, 100, 200)
 VERTICAL = 'vertical'
 HORIZONTAL = 'horizontal'
 D = (VERTICAL, HORIZONTAL)
@@ -18,7 +18,7 @@ def skip_small(h, w, d):
 
 
 def skip_large(h, w):
-    if h > 70 and w > 70:
+    if h > 100 and w > 100:
         pytest.skip('to large to test')
 
 
@@ -240,6 +240,26 @@ def test_s_shape_paths(s_shape):
     for loc in path:
         assert lt(amaze.path(*loc)) == path
         path = path[1:]
+
+
+@pytest.fixture(scope='module')
+def huge(request):
+    maze = zeros(2048, 2048)
+    maze[0, 0] = 1
+    return maze
+
+
+@pytest.mark.timeout(20)
+def test_analyze_speed(huge):
+    for i in range(20):
+        amaze = analyze(huge)
+
+
+@pytest.mark.timeout(5)
+def test_path_speed(huge):
+    amaze = analyze(huge)
+    for i in range(250):
+        amaze.path(2047, 2047)
 
 
 # Helper functions bellow
